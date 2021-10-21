@@ -52,7 +52,8 @@ const getCasualityCount = (data) => {
 // Return a number
 
 const countPassengersInClass = (data, pclass) => {
-  return 0
+  const classCount = data.reduce((accum, person) => person.fields.pclass === pclass ? accum + 1 : accum, 0)
+  return classCount
 }
 
 // 5 ---------------------------------------------------------------
@@ -61,7 +62,13 @@ const countPassengersInClass = (data, pclass) => {
 // Return the count of survivors in that pclass.
 
 const getSurvivorCountForClass = (data, pclass) => {
-  return 0
+  const classCount = data.reduce((accum, person) => {
+    if (person.fields.pclass === pclass && person.fields.survived === 'Yes') {
+      return accum + 1
+    }
+    return accum
+  }, 0)
+  return classCount
 }
 
 // 6 ---------------------------------------------------------------
@@ -70,7 +77,12 @@ const getSurvivorCountForClass = (data, pclass) => {
 // the number of passengers who did not survive for that class. 
 
 const getCasualityCountForClass = (data, pclass) => {
-  return 0
+  return data.reduce((accum, person) => {
+    if (person.fields.pclass === pclass && person.fields.survived === 'No') {
+      return accum + 1
+    }
+    return accum
+  }, 0)
 }
 
 // 7 ---------------------------------------------------------------
@@ -78,7 +90,12 @@ const getCasualityCountForClass = (data, pclass) => {
 // passenger data where the age is missing. 
 
 const getMinAge = (data) => {
-  return 0
+  return data.reduce((accum, person) => {
+    if (person.fields.age < accum && person.fields.age) {
+      return person.fields.age
+    }
+    return accum
+  }, 999)
 }
 
 // 8 ---------------------------------------------------------------
@@ -86,7 +103,12 @@ const getMinAge = (data) => {
 // age is missing.
 
 const getMaxAge = (data) => {
-  return 0
+  return data.reduce((accum, person) => {
+    if (person.fields.age > accum && person.fields.age) {
+      return person.fields.age
+    }
+    return accum
+  }, 0)
 }
 
 // 9 ---------------------------------------------------------------
