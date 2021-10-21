@@ -118,7 +118,8 @@ const getMaxAge = (data) => {
 // embarkation code. Return the count of passenegers with that code.
 
 const getEmbarkedCount = (data, embarked) => {
-  return 0
+  const embarkedCount = data.reduce((accum, person) => person.fields.embarked === embarked ? accum + 1 : accum, 0)
+  return embarkedCount
 }
 
 // 10 ---------------------------------------------------------------
@@ -126,7 +127,12 @@ const getEmbarkedCount = (data, embarked) => {
 // for some passengers you'll need to filter this out!
 
 const getMinFare = (data) => {
-  return -1
+  return data.reduce((accum, person) => {
+    if (person.fields.fare < accum && !isNaN(person.fields.fare)) {
+      return person.fields.fare
+    }
+    return accum
+  }, data[0].fields.fare)
 }
 
 // 11 ---------------------------------------------------------------
@@ -134,7 +140,12 @@ const getMinFare = (data) => {
 // passengers are missing data for fare. Be sure to filter these! 
 
 const getMaxFare = (data) => {
-  return 0
+  return data.reduce((accum, person) => {
+    if (person.fields.fare > accum && !isNaN(person.fields.fare)) {
+      return person.fields.fare
+    }
+    return accum
+  }, data[0].fields.fare)
 }
 
 // 12 ---------------------------------------------------------------
@@ -142,7 +153,8 @@ const getMaxFare = (data) => {
 // "sex" property that is either "male" or "female"
 
 const getPassengersByGender = (data, gender) => {
-  return 0
+  const genderCount = data.reduce((accum, person) => person.fields.sex === gender ? accum + 1 : accum, 0)
+  return genderCount
 }
 
 // 13 ---------------------------------------------------------------
@@ -151,14 +163,16 @@ const getPassengersByGender = (data, gender) => {
 // to the "sex" property and check the "survived" property. 
 
 const getSurvivorsByGender = (data, gender) => {
-  return 0
+  const genderCount = data.reduce((accum, person) => person.fields.sex === gender && person.fields.survived === 'Yes' ? accum + 1 : accum, 0)
+  return genderCount
 }
 
 // 14 ---------------------------------------------------------------
 // Return the number of passengers who did not survived by gender. 
 
 const getCasualitiesByGender = (data, gender) => {
-  return 0
+  const genderCount = data.reduce((accum, person) => person.fields.sex === gender && person.fields.survived === 'No' ? accum + 1 : accum, 0)
+  return genderCount
 }
 
 // 15 --------------------------------------------------------------
@@ -167,7 +181,7 @@ const getCasualitiesByGender = (data, gender) => {
 // where the fare is missing! 
 
 const getTotalFare = (data) => {
-  return 0
+  return data.reduce((accum, person) => accum += person.fields.fare, 0)
 }
 
 // 16 --------------------------------------------------------------
@@ -176,7 +190,10 @@ const getTotalFare = (data) => {
 // missing a fare! 
 
 const getAverageFare = (data) => {
-  return 0
+  const totalFares = data.reduce((accum, person) => accum += person.fields.fare, 0)
+  const passengersWithFares = data.filter((person) => !isNaN(person.fields.fare))
+
+  return totalFares / passengersWithFares.length
 }
 
 // 17 --------------------------------------------------------------
@@ -188,7 +205,15 @@ const getAverageFare = (data) => {
 // 4 + 5 = 9 / 2 median is 4.5!
 
 const getMedianFare = (data) => {
-  return 0
+  const passengersWithFares = data.filter((person) => !isNaN(person.fields.fare))
+  const fares = passengersWithFares.map((person) => person.fields.fare)
+
+  const sortedFares = fares.sort((a, b) => a - b)
+
+  const headCount = sortedFares.length
+  const medianIndex = Math.floor(headCount / 2)
+
+  return sortedFares[medianIndex]
 }
 
 // 18 --------------------------------------------------------------
