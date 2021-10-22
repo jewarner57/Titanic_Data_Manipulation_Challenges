@@ -213,6 +213,10 @@ const getMedianFare = (data) => {
   const headCount = sortedFares.length
   const medianIndex = Math.floor(headCount / 2)
 
+  if (headCount % 2 === 0) {
+    return sortedFares[medianIndex] + sortedFares[medianIndex + 1]
+  }
+
   return sortedFares[medianIndex]
 }
 
@@ -222,7 +226,11 @@ const getMedianFare = (data) => {
 // available. 
 
 const getAverageAge = (data) => {
-  return 0
+  passengersWithAges = data.filter((person) => !isNaN(person.fields.age))
+  passengerCount = passengersWithAges.length
+  passengerAgeSum = passengersWithAges.reduce((accum, person) => accum + person.fields.age, 0)
+
+  return passengerAgeSum / passengerCount
 }
 
 // 19 --------------------------------------------------------------
@@ -230,7 +238,19 @@ const getAverageAge = (data) => {
 // finding the middle value. 
 
 const getMedianAge = (data) => {
-  return 0
+  const passengersWithAges = data.filter((person) => !isNaN(person.fields.age))
+  const ages = passengersWithAges.map((person) => person.fields.age)
+
+  const sortedAges = ages.sort((a, b) => a - b)
+
+  const headCount = sortedAges.length
+  const medianIndex = Math.floor(headCount / 2)
+
+  if (headCount % 2 === 0) {
+    return (sortedAges[medianIndex] + sortedAges[medianIndex + 1]) / 2
+  }
+
+  return sortedAges[medianIndex]
 }
 
 // 20 --------------------------------------------------------------
@@ -238,7 +258,12 @@ const getMedianAge = (data) => {
 // the total number. 
 
 const getAverageAgeByGender = (data, gender) => {
-  return 0
+  const passengersWithAgesAndGender = data.filter((person) => !isNaN(person.fields.age) && person.fields.sex === gender)
+  const headCount = passengersWithAgesAndGender.length
+
+  const ageTotal = passengersWithAgesAndGender.reduce((accum, person) => accum += person.fields.age, 0)
+
+  return ageTotal / headCount
 }
 
 // --------------------------------------------------------------
