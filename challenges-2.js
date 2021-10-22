@@ -25,7 +25,9 @@
 // Or if property = 'age' -> [40, 26, 22, 28, 23, 45, 21, ...]
 
 const getAllValuesForProperty = (data, property) => {
-	return []
+  const values = data.map((person) => person.fields[property])
+
+  return values
 }
 
 // 2 -------------------------------------------------------------
@@ -34,7 +36,9 @@ const getAllValuesForProperty = (data, property) => {
 // array of all the male passengers [{...}, {...}, {...}, ...]
 
 const filterByProperty = (data, property, value) => {
-	return []
+  const matchingPassengers = data.filter((person) => person.fields[property] === value)
+
+  return matchingPassengers
 }
 
 // 3 -------------------------------------------------------------
@@ -43,7 +47,9 @@ const filterByProperty = (data, property, value) => {
 // given property have been removed
 
 const filterNullForProperty = (data, property) => {
-	return []
+  const nonNullPassengers = data.filter((person) => person.fields[property] !== undefined)
+
+  return nonNullPassengers
 }
 
 // 4 -------------------------------------------------------------
@@ -52,7 +58,10 @@ const filterNullForProperty = (data, property) => {
 // Return the total of all values for a given property. This
 
 const sumAllProperty = (data, property) => {
-	return 0
+  const nonNullData = data.filter((passenger) => !isNaN(passenger.fields[property]))
+  const propertySum = nonNullData.reduce((accum, passenger) => accum += passenger.fields[property], 0)
+
+  return propertySum
 }
 
 
@@ -64,10 +73,22 @@ const sumAllProperty = (data, property) => {
 // and Q, and a couple passengers have undefined for this property. 
 // So the output should be: { S: 644, C: 168, Q: 77, undefined: 2 }
 // That is 644 passengers embarked at South Hampton. 168 embarked 
-// at Cherbourg, 77 emabrked at Queenstown, and 2 are undedfined
+// at Cherbourg, 77 emabarked at Queenstown, and 2 are undefined
 
 const countAllProperty = (data, property) => {
-	return {}
+  const uniqueValues = {}
+  data.forEach((passenger) => {
+    const propertyVal = passenger.fields[property]
+
+    if (uniqueValues[propertyVal]) {
+      uniqueValues[propertyVal] += 1
+      return
+    }
+    uniqueValues[propertyVal] = 1
+
+  })
+
+  return uniqueValues
 }
 
 
@@ -77,7 +98,7 @@ const countAllProperty = (data, property) => {
 // of items in each bucket.
 
 const makeHistogram = (data, property, step) => {
-	return []
+  return []
 }
 
 // 7 ------------------------------------------------------------
@@ -86,7 +107,16 @@ const makeHistogram = (data, property, step) => {
 // to divide each value by the maximum value in the array.
 
 const normalizeProperty = (data, property) => {
-	return []
+  // Filter out null values
+  const nonNullValues = data.filter((passenger) => !isNaN(passenger.fields[property]))
+  // Get values of given property
+  const propertyValues = nonNullValues.map((passenger) => passenger.fields[property])
+  // Get max of those values
+  const maxVal = Math.max(...propertyValues)
+  // Normalize the values
+  const normalizedValues = propertyValues.map((value) => value / maxVal)
+
+  return normalizedValues
 }
 
 // 8 ------------------------------------------------------------
@@ -97,18 +127,24 @@ const normalizeProperty = (data, property) => {
 // would return ['male', 'female']
 
 const getUniqueValues = (data, property) => {
-	return []
+  const uniqueValues = {}
+  data.forEach((passenger) => {
+    const propertyVal = passenger.fields[property]
+    uniqueValues[propertyVal] = propertyVal
+  })
+
+  return Object.values(uniqueValues)
 }
 
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 module.exports = {
-	getAllValuesForProperty,
-	filterByProperty,
-	filterNullForProperty,
-	sumAllProperty,
-	countAllProperty,
-	makeHistogram,
-	normalizeProperty,
-	getUniqueValues
+  getAllValuesForProperty,
+  filterByProperty,
+  filterNullForProperty,
+  sumAllProperty,
+  countAllProperty,
+  makeHistogram,
+  normalizeProperty,
+  getUniqueValues
 }
