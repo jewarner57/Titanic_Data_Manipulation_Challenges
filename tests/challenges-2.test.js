@@ -155,7 +155,7 @@ describe('Challenge 2 Titanic', () => {
       return acc
     }, [])
 
-    const fares = data.filter(p => p.fields.age !== undefined).reduce((acc, p) => {
+    const fares = data.filter(p => p.fields.fare !== undefined).reduce((acc, p) => {
       if (acc[Math.floor(p.fields.fare / 10)] === undefined) {
         acc[Math.floor(p.fields.fare / 10)] = 1
       } else {

@@ -76,29 +76,44 @@ const sumAllProperty = (data, property) => {
 // at Cherbourg, 77 emabarked at Queenstown, and 2 are undefined
 
 const countAllProperty = (data, property) => {
-  const uniqueValues = {}
-  data.forEach((passenger) => {
+  const uniqueValues = data.reduce((accum, passenger) => {
     const propertyVal = passenger.fields[property]
 
-    if (uniqueValues[propertyVal]) {
-      uniqueValues[propertyVal] += 1
-      return
+    if (accum[propertyVal]) {
+      accum[propertyVal] += 1
+      return accum
     }
-    uniqueValues[propertyVal] = 1
+    return { [propertyVal]: 1, ...accum }
 
-  })
+  }, {})
 
   return uniqueValues
 }
-
 
 // 6 ------------------------------------------------------------
 // Make histogram. The goal is to return an array with values 
 // of a properties divided into buckets and counting the number
 // of items in each bucket.
+// 
 
 const makeHistogram = (data, property, step) => {
-  return []
+  // Filter out null values
+  const nonNullValues = data.filter((passenger) => !isNaN(passenger.fields[property]))
+  // Get values of given property
+  const propertyValues = nonNullValues.map((passenger) => passenger.fields[property])
+
+  const bucketArr = propertyValues.reduce((accum, value) => {
+
+    if (!accum[Math.floor(value / step)]) {
+      accum[Math.floor(value / step)] = 1
+      return accum
+    }
+    accum[Math.floor(value / step)] += 1
+    return accum
+
+  }, [])
+
+  return Array.from(bucketArr, v => v || 0)
 }
 
 // 7 ------------------------------------------------------------
@@ -127,11 +142,11 @@ const normalizeProperty = (data, property) => {
 // would return ['male', 'female']
 
 const getUniqueValues = (data, property) => {
-  const uniqueValues = {}
-  data.forEach((passenger) => {
+
+  const uniqueValues = data.reduce((accum, passenger) => {
     const propertyVal = passenger.fields[property]
-    uniqueValues[propertyVal] = propertyVal
-  })
+    return { [propertyVal]: propertyVal, ...accum }
+  }, {})
 
   return Object.values(uniqueValues)
 }
